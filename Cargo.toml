@@ -1,6 +1,6 @@
 [package]
 name = "fast_ctc_decode"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Vlado Boza <bozavlado@gmail.com>", "Chris Seymour <chris.seymour@nanoporetech.com>", "Jabari Holder <jholder@and.digital>"]
 edition = "2018"
 
@@ -17,18 +17,12 @@ pyo3 = { version = "0.14", features = ["extension-module"], optional = true }
 numpy = { version = "0.14.1", optional = true }
 
 # wasm build
-wasm-bindgen = { version = "0.2.50", features = ["serde-serialize"] }
-getrandom = { version = "0.2", features = ["js"] }
-web-sys = "0.3.51"
-js-sys = "0.3.51"
 serde_json = "1.0.64"
 serde_derive = "1.0.126"
 serde = {version = "1.0.126", features = ["derive"]}
 
 [features]
-default = ["fastexp", "resolver", "wasm"]
-wasm = []
-python = ["pyo3", "numpy"]
+default = ["fastexp", "resolver"]
 fastexp = []
 resolver = []
 
