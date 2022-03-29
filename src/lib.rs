@@ -13,10 +13,10 @@ pub mod vec2d;
 mod fastexp;
 
 pub mod prelude {
-    pub use super::duplex::*;
-    pub use super::search::*;
-    pub use super::tree::*;
-    pub use super::vec2d::*;
+    pub use crate::duplex::*;
+    pub use crate::search::*;
+    pub use crate::tree::*;
+    pub use crate::vec2d::*;
 }
 
 #[derive(Clone, Copy, Debug)]
