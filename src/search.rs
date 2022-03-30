@@ -46,7 +46,6 @@ pub fn crf_beam_search<D: Data<Elem = f32>>(
     assert!(!network_output.is_empty());
     assert_eq!(network_output.ndim(), 3);
     assert_eq!(network_output.shape()[2], alphabet.len());
-
     let n_state = network_output.shape()[1];
     let n_base = network_output.shape()[2] - 1;
 
@@ -148,7 +147,7 @@ pub fn crf_beam_search<D: Data<Elem = f32>>(
     if beam[0].node != ROOT_NODE {
         for (label, &time) in suffix_tree.iter_from(beam[0].node) {
             path.push(time);
-            sequence.push_str(&alphabet[label + 1]);
+            sequence.push_str(&alphabet[label + 1].chars().rev().collect::<String>());
         }
     }
 
@@ -288,12 +287,12 @@ pub fn beam_search<D: Data<Elem = f32>>(
     if beam[0].node != ROOT_NODE {
         for (label, &time) in suffix_tree.iter_from(beam[0].node) {
             path.push(time);
-            sequence.push_str(&alphabet[label + 1]);
+            sequence.push_str(&alphabet[label + 1].chars().rev().collect::<String>());
         }
     }
 
     path.reverse();
-    Ok((sequence.chars().collect::<String>(), path))
+    Ok((sequence.chars().rev().collect::<String>(), path))
 }
 
 fn find_max(
