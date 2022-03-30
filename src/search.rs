@@ -293,7 +293,7 @@ pub fn beam_search<D: Data<Elem = f32>>(
     }
 
     path.reverse();
-    Ok((sequence.chars().rev().collect::<String>(), path))
+    Ok((sequence.chars().collect::<String>(), path))
 }
 
 fn find_max(
