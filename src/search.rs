@@ -161,7 +161,7 @@ pub fn beam_search<D: Data<Elem = f32>>(
     beam_size: usize,
     beam_cut_threshold: f32,
     collapse_repeats: bool,
-) -> Result<(String, Vec<usize>), SearchError> {
+) -> Result<(String, Vec<usize>, f32), SearchError> {
     // alphabet size minus the blank label
     let alphabet_size = alphabet.len() - 1;
 
@@ -173,7 +173,6 @@ pub fn beam_search<D: Data<Elem = f32>>(
         label_prob: 0.0,
     }];
     let mut next_beam = Vec::new();
-
     for (idx, pr) in network_output.outer_iter().enumerate() {
         next_beam.clear();
 
@@ -185,7 +184,6 @@ pub fn beam_search<D: Data<Elem = f32>>(
         } in &beam
         {
             let tip_label = suffix_tree.label(node);
-
             // add N to beam
             if pr[0] > beam_cut_threshold {
                 next_beam.push(SearchPoint {
@@ -274,25 +272,30 @@ pub fn beam_search<D: Data<Elem = f32>>(
             // we've run out of beam (probably the threshold is too high)
             return Err(SearchError::RanOutOfBeam);
         }
-        let top = beam[0].probability();
-        for mut x in &mut beam {
-            x.label_prob /= top;
-            x.gap_prob /= top;
-        }
-    }
 
+        // Probability normalisation is removed because we want to 
+        // output raw probability scores.
+        // NOTE: this provides a risk of float underflow as we are
+        // multiplying several numbers < 0. 
+        // We can get round this by using logs and adding log(p) to scores
+        // but that would be slower. 
+
+        // let top = beam[0].probability();
+        // for mut x in &mut beam {
+        //     x.label_prob /= top;
+        //     x.gap_prob /= top;
+        // }
+    }
     let mut path = Vec::new();
     let mut sequence = String::new();
-
     if beam[0].node != ROOT_NODE {
         for (label, &time) in suffix_tree.iter_from(beam[0].node) {
             path.push(time);
             sequence.push_str(&alphabet[label + 1].chars().rev().collect::<String>());
         }
     }
-
     path.reverse();
-    Ok((sequence.chars().rev().collect::<String>(), path))
+    Ok((sequence.chars().rev().collect::<String>(), path,beam[0].probability()))
 }
 
 fn find_max(
