@@ -286,6 +286,10 @@ pub fn beam_search<D: Data<Elem = f32>>(
         //     x.gap_prob /= top;
         // }
     }
+    let mut normalize_denominator :f32 = 0.00;
+    for i in 0..beam.len()  {
+        normalize_denominator += beam[i].probability()
+    }
     let mut path = Vec::new();
     let mut sequence = String::new();
     if beam[0].node != ROOT_NODE {
@@ -295,7 +299,7 @@ pub fn beam_search<D: Data<Elem = f32>>(
         }
     }
     path.reverse();
-    Ok((sequence.chars().rev().collect::<String>(), path,beam[0].probability()))
+    Ok((sequence.chars().rev().collect::<String>(), path, beam[0].probability() / normalize_denominator))
 }
 
 fn find_max(
