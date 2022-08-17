@@ -287,8 +287,8 @@ pub fn beam_search<D: Data<Elem = f32>>(
         // }
     }
     let mut normalize_denominator :f32 = 0.00;
-    for i in 0..beam.len()  {
-        normalize_denominator += beam[i].probability()
+    for mut x in &mut beam  {
+        normalize_denominator += x.probability()
     }
     let mut path = Vec::new();
     let mut sequence = String::new();
