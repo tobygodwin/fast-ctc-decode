@@ -286,6 +286,11 @@ pub fn beam_search<D: Data<Elem = f32>>(
         //     x.gap_prob /= top;
         // }
     }
+    // The probabilities of the beam paths are summed (using normalize_denominator) 
+    // and used to divide the best path's probability to normalize the outputted 
+    // probabilities to range within [0,1]. This fixes the problem of outputting
+    // very low probability values (like 1e-5) which is not easily interpretable
+    // as confidence scores, which is one of the main use cases of this value.
     let mut normalize_denominator :f32 = 0.00;
     for mut x in &mut beam  {
         normalize_denominator += x.probability()
